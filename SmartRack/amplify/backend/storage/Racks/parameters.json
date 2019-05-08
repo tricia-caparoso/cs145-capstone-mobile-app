@@ -1,0 +1,5 @@
+{
+    "tableName": "Racks",
+    "partitionKeyName": "rackId",
+    "partitionKeyType": "N"
+}

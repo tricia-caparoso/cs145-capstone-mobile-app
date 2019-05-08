@@ -1,18 +1,66 @@
+import Amplify, { API } from 'aws-amplify';
+import awsmobile from './src/aws-exports';
 //This is an example code to Scan QR code//
 import React, { Component } from 'react';
 //import react in our code.
-import { Text, View, Linking, TouchableHighlight, PermissionsAndroid, Platform, StyleSheet} from 'react-native';
+import { Text, TextInput, View, ScrollView, Linking, TouchableHighlight, PermissionsAndroid, Button, Platform, StyleSheet} from 'react-native';
 // import all basic components
 import { CameraKitCameraScreen, } from 'react-native-camera-kit';
 //import CameraKitCameraScreen we are going to use.
-export default class App extends Component {
+Amplify.configure(awsmobile);
+class App extends Component {
   constructor() {
     super();
     this.state = {
       //variable to hold the qr value
       qrvalue: '',
       opneScanner: false,
+      apiResponse: 404,
+      rackId:''
     };
+  }
+  handleChangeRackId = (event) => {this.setState({rackId: event});}
+  async saveTest() {
+    let newNote = {
+      body: {
+        "rackPass": "abc123",
+        "devPass": "def456",
+        "devId": 23,
+        "status": true,
+        "rackId": this.state.qrvalue
+      }
+    }
+    const path = "/Racks/";
+    // Use the API module to save the note to the database
+    try {
+      const Response = await API.post("RacksCRUD", path, newNote)
+      console.log("response from saving note: " + apiResponse);
+      this.setState({apiResponse: Response});
+    } catch (e) {
+      this.setState({apiResponse: e});
+    }
+  }
+  async getTest() {
+    const path = "/Racks/object/" + this.state.qrvalue;
+    try {
+      const apiResponse = await API.get("RacksCRUD", path);
+      console.log("response from getting note: " + apiResponse);
+      this.setState({apiResponse});
+    } catch (e) {
+    this.setState({apiResponse: e});
+      console.log(e);
+    }
+  }
+  async deleteTest() {
+    const path = "/Racks/" + this.state.qrvalue;
+    try {
+      const apiResponse = await API.del("RacksCRUD", path);
+      console.log("response from deleteing note: " + apiResponse);
+      this.setState({apiResponse});
+    } catch (e) {
+    this.setState({apiResponse: e});
+      console.log(e);
+    }
   }
   onOpenlink() {
     //Function to open URL, If scanned 
@@ -32,8 +80,8 @@ export default class App extends Component {
         try {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.CAMERA,{
-              'title': 'CameraExample App Camera Permission',
-              'message': 'CameraExample App needs access to your camera '
+              'title': 'SmartRack Camera Permission',
+              'message': 'SmartRack App needs access to your camera '
             }
           )
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -61,7 +109,7 @@ export default class App extends Component {
     if (!this.state.opneScanner) {
       return (
         <View style={styles.container}>
-            <Text style={styles.heading}>React Native QR Code Example</Text>
+            <Text style={styles.heading}>Welcome to SmartRack!</Text>
             <Text style={styles.simpleText}>{this.state.qrvalue ? 'Scanned QR Code: '+this.state.qrvalue : ''}</Text>
             {this.state.qrvalue.includes("http") ? 
               <TouchableHighlight
@@ -75,6 +123,18 @@ export default class App extends Component {
               onPress={() => this.onOpneScanner()}
               style={styles.button}>
                 <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Open QR Scanner</Text>
+            </TouchableHighlight>
+            <ScrollView >
+              <Text>Response: {this.state.qrvalue} {this.state.apiResponse && JSON.stringify(this.state.apiResponse, undefined, 2)}</Text>
+            </ScrollView >
+            <TouchableHighlight onPress={this.saveTest.bind(this)} style={styles.button}>
+                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Save data</Text>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.getTest.bind(this)} style={styles.button}>
+                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Get data</Text>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.deleteTest.bind(this)} style={styles.button}>
+                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Delete data</Text>
             </TouchableHighlight>
         </View>
       );
@@ -100,6 +160,7 @@ export default class App extends Component {
     );
   }
 }
+export default App;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -127,5 +188,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center', 
     padding: 10, 
     marginTop: 16
-  }
+  },
+  textInput: {
+      margin: 15,
+      height: 30,
+      width: 200,
+      borderWidth: 1,
+      color: 'green',
+      fontSize: 12,
+      backgroundColor: 'black'
+   }
 });

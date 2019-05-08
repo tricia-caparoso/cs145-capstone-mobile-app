@@ -1,0 +1,19 @@
+{
+    "rdev": {
+        "awscloudformation": {
+            "AuthRoleName": "smartrack-rdev-20190508062334-authRole",
+            "UnauthRoleArn": "arn:aws:iam::693535435238:role/smartrack-rdev-20190508062334-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::693535435238:role/smartrack-rdev-20190508062334-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "smartrack-rdev-20190508062334-deployment",
+            "UnauthRoleName": "smartrack-rdev-20190508062334-unauthRole",
+            "StackName": "smartrack-rdev-20190508062334",
+            "StackId": "arn:aws:cloudformation:us-east-1:693535435238:stack/smartrack-rdev-20190508062334/c19c5ca0-7116-11e9-94b1-0e061c1f1416"
+        },
+        "categories": {
+            "auth": {
+                "cognito81f73c0b": {}
+            }
+        }
+    }
+}
