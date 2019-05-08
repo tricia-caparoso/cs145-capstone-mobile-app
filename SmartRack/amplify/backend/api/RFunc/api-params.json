@@ -1,8 +1,8 @@
 {
     "paths": [
         {
-            "name": "/Racks",
-            "lambdaFunction": "RacksCRUD",
+            "name": "/BikeRacks",
+            "lambdaFunction": "RFunc",
             "privacy": {
                 "protected": true,
                 "auth": [
@@ -22,23 +22,23 @@
             }
         }
     ],
-    "resourceName": "RacksCRUD",
-    "apiName": "RacksCRUD",
+    "resourceName": "RFunc",
+    "apiName": "RFunc",
     "functionArns": [
         {
-            "lambdaFunction": "RacksCRUD"
+            "lambdaFunction": "RFunc"
         }
     ],
     "privacy": {
         "auth": 1,
         "unauth": 1,
-        "authRoleName": "smartrack-rdev-20190508062334-authRole",
-        "unAuthRoleName": "smartrack-rdev-20190508062334-unauthRole"
+        "authRoleName": "smartrack-prod-20190508122025-authRole",
+        "unAuthRoleName": "smartrack-prod-20190508122025-unauthRole"
     },
     "dependsOn": [
         {
             "category": "function",
-            "resourceName": "RacksCRUD",
+            "resourceName": "RFunc",
             "attributes": [
                 "Name",
                 "Arn"

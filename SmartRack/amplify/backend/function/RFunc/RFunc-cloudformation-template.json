@@ -5,13 +5,13 @@
 		"env": {
 			"Type": "String"
 		},
-		"storageRacksName": {
+		"storageBikeRacksName": {
 			"Type": "String",
-			"Default": "storageRacksName"
+			"Default": "storageBikeRacksName"
 		},
-		"storageRacksArn": {
+		"storageBikeRacksArn": {
 			"Type": "String",
-			"Default": "storageRacksArn"
+			"Default": "storageBikeRacksArn"
 		}
 	},
 	"Conditions": {
@@ -36,12 +36,12 @@
 				"FunctionName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"RacksCRUD",
+						"RFunc",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"RacksCRUD",
+									"RFunc",
 									"-",
 									{
 										"Ref": "env"
@@ -67,8 +67,8 @@
 				"Runtime": "nodejs8.10",
 				"Timeout": "25",
 				"Code": {
-					"S3Bucket": "smartrack-rdev-20190508062334-deployment",
-					"S3Key": "amplify-builds/RacksCRUD-1557281810-latest-build.zip"
+					"S3Bucket": "smartrack-prod-20190508122025-deployment",
+					"S3Key": "amplify-builds/RFunc-1557289646-latest-build.zip"
 				}
 			}
 		},
@@ -78,12 +78,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"smartrackLambdaRole59855feb",
+						"smartrackLambdaRole53fba2b9",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"smartrackLambdaRole59855feb",
+									"smartrackLambdaRole53fba2b9",
 									"-",
 									{
 										"Ref": "env"
@@ -162,7 +162,7 @@
 							],
 							"Resource": [
 								{
-									"Ref": "storageRacksArn"
+									"Ref": "storageBikeRacksArn"
 								}
 							]
 						}

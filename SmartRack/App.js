@@ -23,42 +23,41 @@ class App extends Component {
   async saveTest() {
     let newNote = {
       body: {
-        "rackPass": "abc123",
-        "devPass": "def456",
         "devId": 23,
         "status": true,
-        "rackId": this.state.qrvalue
+        "rackId": Number(this.state.qrvalue)
       }
     }
-    const path = "/Racks/";
+    const path = "/BikeRacks/";
     // Use the API module to save the note to the database
+    this.setState({apiResponse: "hi"});
     try {
-      const Response = await API.post("RacksCRUD", path, newNote)
+      const Response = await API.post("RFunc", path, newNote)
       console.log("response from saving note: " + apiResponse);
       this.setState({apiResponse: Response});
     } catch (e) {
-      this.setState({apiResponse: e});
+      this.setState({apiResponse: e.response});
     }
   }
   async getTest() {
-    const path = "/Racks/object/" + this.state.qrvalue;
+    const path = "/BikeRacks/object/" + this.state.qrvalue;
     try {
-      const apiResponse = await API.get("RacksCRUD", path);
+      const apiResponse = await API.get("RFunc", path);
       console.log("response from getting note: " + apiResponse);
       this.setState({apiResponse});
     } catch (e) {
-    this.setState({apiResponse: e});
+    this.setState({apiResponse: e.response});
       console.log(e);
     }
   }
   async deleteTest() {
-    const path = "/Racks/" + this.state.qrvalue;
+    const path = "/BikeRacks/object/" + this.state.qrvalue;
     try {
-      const apiResponse = await API.del("RacksCRUD", path);
+      const apiResponse = await API.del("RFunc", path);
       console.log("response from deleteing note: " + apiResponse);
       this.setState({apiResponse});
     } catch (e) {
-    this.setState({apiResponse: e});
+    this.setState({apiResponse: e.response});
       console.log(e);
     }
   }
@@ -124,9 +123,7 @@ class App extends Component {
               style={styles.button}>
                 <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Open QR Scanner</Text>
             </TouchableHighlight>
-            <ScrollView >
-              <Text>Response: {this.state.qrvalue} {this.state.apiResponse && JSON.stringify(this.state.apiResponse, undefined, 2)}</Text>
-            </ScrollView >
+            <Text>Response: {this.state.apiResponse && JSON.stringify(this.state.apiResponse, undefined, 2)}</Text>
             <TouchableHighlight onPress={this.saveTest.bind(this)} style={styles.button}>
                 <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Save data</Text>
             </TouchableHighlight>

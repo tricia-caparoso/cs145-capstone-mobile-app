@@ -14,15 +14,15 @@
         },
     
     
-          "functionRacksCRUDName": {
+          "functionRFuncName": {
             "Type": "String",
-            "Default": "functionRacksCRUDName"
+            "Default": "functionRFuncName"
           },
         
           
-          "functionRacksCRUDArn": {
+          "functionRFuncArn": {
             "Type": "String",
-            "Default": "functionRacksCRUDArn"
+            "Default": "functionRFuncArn"
           }
         
           
@@ -41,13 +41,13 @@
     },
     "Resources": {
         
-        "PolicyAPIGWRacksCRUDauth": {
+        "PolicyAPIGWRFuncauth": {
             "DependsOn": [
-              "RacksCRUD"
+              "RFunc"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGWRacksCRUDauth",
+              "PolicyName": "PolicyAPIGWRFuncauth",
               "Roles": [
                 {"Ref": "authRoleName"}
               ],
@@ -77,7 +77,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -90,7 +90,7 @@
                               ]
                             },
                               "/POST",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       },
@@ -108,7 +108,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -121,7 +121,7 @@
                               ]
                             },
                               "/POST",
-                            "/Racks"
+                            "/BikeRacks"
                           ]
                         ]
                       }
@@ -143,7 +143,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -156,7 +156,7 @@
                               ]
                             },
                               "/GET",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       },
@@ -174,7 +174,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -187,7 +187,7 @@
                               ]
                             },
                               "/GET",
-                            "/Racks"
+                            "/BikeRacks"
                           ]
                         ]
                       }
@@ -209,7 +209,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -222,7 +222,7 @@
                               ]
                             },
                               "/PUT",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       },
@@ -240,7 +240,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -253,7 +253,7 @@
                               ]
                             },
                               "/PUT",
-                            "/Racks"
+                            "/BikeRacks"
                           ]
                         ]
                       }
@@ -275,7 +275,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -288,7 +288,7 @@
                               ]
                             },
                               "/PATCH",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       },
@@ -306,7 +306,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -319,7 +319,7 @@
                               ]
                             },
                               "/PATCH",
-                            "/Racks"
+                            "/BikeRacks"
                           ]
                         ]
                       }
@@ -341,7 +341,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -354,7 +354,7 @@
                               ]
                             },
                               "/DELETE",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       },
@@ -372,7 +372,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -385,7 +385,7 @@
                               ]
                             },
                               "/DELETE",
-                            "/Racks"
+                            "/BikeRacks"
                           ]
                         ]
                       }
@@ -402,13 +402,13 @@
           },
         
         
-        "PolicyAPIGWRacksCRUDunauth": {
+        "PolicyAPIGWRFuncunauth": {
             "DependsOn": [
-              "RacksCRUD"
+              "RFunc"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGWRacksCRUDunauth",
+              "PolicyName": "PolicyAPIGWRFuncunauth",
               "Roles": [
                  {"Ref": "unauthRoleName"}
               ],
@@ -438,7 +438,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -451,7 +451,7 @@
                               ]
                             },
                               "/POST",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       }
@@ -473,7 +473,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -486,7 +486,7 @@
                               ]
                             },
                               "/GET",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       }
@@ -508,7 +508,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -521,7 +521,7 @@
                               ]
                             },
                               "/PUT",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       }
@@ -543,7 +543,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -556,7 +556,7 @@
                               ]
                             },
                               "/PATCH",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       }
@@ -578,7 +578,7 @@
                             },
                             ":",
                             {
-                              "Ref": "RacksCRUD"
+                              "Ref": "RFunc"
                             },
                             "/",
                             {
@@ -591,7 +591,7 @@
                               ]
                             },
                               "/DELETE",
-                            "/Racks/*"
+                            "/BikeRacks/*"
                           ]
                         ]
                       }
@@ -607,16 +607,16 @@
             }
           },
         
-      "RacksCRUD": {
+      "RFunc": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
           "Description": "",
-          "Name": "RacksCRUD",
+          "Name": "RFunc",
           "Body": {
             "swagger": "2.0",
             "info": {
               "version": "2018-05-24T17:52:00Z",
-              "title": "RacksCRUD"
+              "title": "RFunc"
             },
             "host": {
                 "Fn::Join": [
@@ -652,7 +652,7 @@
             ],
             "paths": {
               
-              "/Racks": {
+              "/BikeRacks": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -744,7 +744,7 @@
                             
                             {
                                 
-                                "Ref": "functionRacksCRUDArn"
+                                "Ref": "functionRFuncArn"
                             },
                             
                             "/invocations"
@@ -757,7 +757,7 @@
                   }
                 }
               },
-              "/Racks/{proxy+}": {
+              "/BikeRacks/{proxy+}": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -849,7 +849,7 @@
                           
                           {
                             
-                            "Ref": "functionRacksCRUDArn"
+                            "Ref": "functionRFuncArn"
                           },
                           
                           "/invocations"
@@ -906,12 +906,12 @@
                   
         
         
-        "functionRacksCRUDPermissionRacksCRUD": {
+        "functionRFuncPermissionRFunc": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
                     {
-                        "Ref":  "functionRacksCRUDName"
+                        "Ref":  "functionRFuncName"
                     },
                     
                     "Action": "lambda:InvokeFunction",
@@ -930,7 +930,7 @@
                             },
                             ":",
                             {
-                                "Ref": "RacksCRUD"
+                                "Ref": "RFunc"
                             },
                             "/*/*/*"
                         ]
@@ -941,7 +941,7 @@
         
         
         
-      "DeploymentAPIGWRacksCRUD": {
+      "DeploymentAPIGWRFunc": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
@@ -955,7 +955,7 @@
             ]
           },
           "RestApiId": {
-            "Ref": "RacksCRUD"
+            "Ref": "RFunc"
           }
         }
       }
@@ -963,11 +963,11 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "RacksCRUD"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "RFunc"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
         },
         "ApiName": {
           "Description": "API Friendly name",
-          "Value": "RacksCRUD"
+          "Value": "RFunc"
         }
     }
   }

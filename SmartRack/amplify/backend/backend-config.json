@@ -1,19 +1,19 @@
 {
 	"storage": {
-		"Racks": {
+		"BikeRacks": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
 		}
 	},
 	"function": {
-		"RacksCRUD": {
+		"RFunc": {
 			"service": "Lambda",
 			"providerPlugin": "awscloudformation",
 			"build": true,
 			"dependsOn": [
 				{
 					"category": "storage",
-					"resourceName": "Racks",
+					"resourceName": "BikeRacks",
 					"attributes": [
 						"Name",
 						"Arn"
@@ -23,19 +23,19 @@
 		}
 	},
 	"auth": {
-		"cognito81f73c0b": {
+		"cognito0d9046fc": {
 			"service": "Cognito",
 			"providerPlugin": "awscloudformation"
 		}
 	},
 	"api": {
-		"RacksCRUD": {
+		"RFunc": {
 			"service": "API Gateway",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": [
 				{
 					"category": "function",
-					"resourceName": "RacksCRUD",
+					"resourceName": "RFunc",
 					"attributes": [
 						"Name",
 						"Arn"

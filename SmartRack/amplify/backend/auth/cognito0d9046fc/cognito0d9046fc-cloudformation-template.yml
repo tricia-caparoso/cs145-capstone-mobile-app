@@ -333,7 +333,7 @@ Resources:
   # Always created
     Type: AWS::Cognito::IdentityPool
     Properties: 
-      IdentityPoolName: !If [ShouldNotCreateEnvResources, 'smartrack_identitypool_4ba66108', !Join ['',['smartrack_identitypool_4ba66108', '__', !Ref env]]]
+      IdentityPoolName: !If [ShouldNotCreateEnvResources, 'smartrack_identitypool_a9d2718c', !Join ['',['smartrack_identitypool_a9d2718c', '__', !Ref env]]]
       
       CognitoIdentityProviders:
         - ClientId:  !Ref UserPoolClient

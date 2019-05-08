@@ -14,7 +14,7 @@ AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-let tableName = "Racks";
+let tableName = "BikeRacks";
 if(process.env.ENV && process.env.ENV !== "NONE") {
   tableName = tableName + '-' + process.env.ENV;
 }
@@ -25,7 +25,7 @@ const partitionKeyType = "N";
 const sortKeyName = "";
 const sortKeyType = "";
 const hasSortKey = sortKeyName !== "";
-const path = "/Racks";
+const path = "/BikeRacks";
 const UNAUTH = 'UNAUTH';
 const hashKeyPath = '/:' + partitionKeyName;
 const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
@@ -51,19 +51,18 @@ const convertUrlType = (param, type) => {
   }
 }
 
-function generateOTP() {           
-  // Declare a string variable  
-  // which stores all string 
-  var string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
-  let OTP = ''; 
-    
-  // Find the length of string 
-  var len = string.length; 
-  for (let i = 0; i < 6; i++ ) { 
-      OTP += string[Math.floor(Math.random() * len)]; 
-  }
-  return OTP; 
-} 
+// Function to generate OTP 
+function generateOTP() { 
+          
+    // Declare a digits variable  
+    // which stores all digits 
+    var digits = '0123456789'; 
+    let OTP = ''; 
+    for (let i = 0; i < 4; i++ ) { 
+        OTP += digits[Math.floor(Math.random() * 10)]; 
+    } 
+    return OTP; 
+}
 
 /********************************
  * HTTP Get method for list objects *
@@ -151,25 +150,15 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 * HTTP put method for insert object *
 *************************************/
 
-app.put(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
-  var params = {};
-  if (userIdPresent  && req.apiGateway) {
+app.put(path, function(req, res) {
+  
+  if (userIdPresent && req.apiGateway) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  } else {
-    params[partitionKeyName] = req.params[partitionKeyName];
-     try {
-      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
-    }
   }
 
   let putItemParams = {
     TableName: tableName,
-    Item: {
-        "rackId": params,
-        "rackPass": generateOTP(),
-        "devPass": generateOTP(),
-        "status": true
-      }
+    Item: req.body
   }
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
@@ -191,15 +180,12 @@ app.post(path, function(req, res) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
+  req.body['devPass'] = generateOTP();
+  req.body['rackPass'] = generateOTP();
+
   let putItemParams = {
     TableName: tableName,
-    Item: {
-        "rackId": req.body.rackId,
-        "devId": req.body.devId,
-        "rackPass": generateOTP(),
-        "devPass": generateOTP(),
-        "status": true
-      }
+    Item: req.body
   }
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
