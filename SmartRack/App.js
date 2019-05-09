@@ -15,15 +15,17 @@ class App extends Component {
       //variable to hold the qr value
       qrvalue: '',
       opneScanner: false,
-      apiResponse: 404,
-      rackId:''
+      apiResponse: '',
+      OTP:'',
+      temp: ''
     };
   }
-  handleChangeRackId = (event) => {this.setState({rackId: event});}
-  async saveTest() {
+  handleChangeOTP = (event) => {this.setState({OTP: event});}
+  async lockBike() {
     let newNote = {
       body: {
-        "devId": 23,
+        "devId": 4,
+        "devPass": this.state.OTP,
         "status": true,
         "rackId": Number(this.state.qrvalue)
       }
@@ -32,33 +34,38 @@ class App extends Component {
     // Use the API module to save the note to the database
     this.setState({apiResponse: "hi"});
     try {
-      const Response = await API.post("RFunc", path, newNote)
-      console.log("response from saving note: " + apiResponse);
+      const Response = await API.put("RFunc", path, newNote)
       this.setState({apiResponse: Response});
     } catch (e) {
       this.setState({apiResponse: e.response});
     }
-  }
-  async getTest() {
-    const path = "/BikeRacks/object/" + this.state.qrvalue;
+  } 
+  async unlockBike() {
+    let newNote = {
+      body: {
+        "status": false,
+        "rackId": Number(this.state.qrvalue)
+      }
+    }
+    const path = "/BikeRacks/";
     try {
-      const apiResponse = await API.get("RFunc", path);
-      console.log("response from getting note: " + apiResponse);
-      this.setState({apiResponse});
+      const Response = await API.put("RFunc", path, newNote)
+      this.setState({apiResponse: Response});
     } catch (e) {
-    this.setState({apiResponse: e.response});
+      this.setState({apiResponse: e});
       console.log(e);
     }
   }
-  async deleteTest() {
+  async generateOTP() {
     const path = "/BikeRacks/object/" + this.state.qrvalue;
+    this.setState({apiResponse: "Check"});
     try {
-      const apiResponse = await API.del("RFunc", path);
-      console.log("response from deleteing note: " + apiResponse);
+      const apiResponse = await API.get("RFunc", path);
       this.setState({apiResponse});
+      this.setState({OTP: apiResponse.Pass});
     } catch (e) {
-    this.setState({apiResponse: e.response});
       console.log(e);
+      this.setState({apiResponse: e});
     }
   }
   onOpenlink() {
@@ -109,29 +116,24 @@ class App extends Component {
       return (
         <View style={styles.container}>
             <Text style={styles.heading}>Welcome to SmartRack!</Text>
-            <Text style={styles.simpleText}>{this.state.qrvalue ? 'Scanned QR Code: '+this.state.qrvalue : ''}</Text>
-            {this.state.qrvalue.includes("http") ? 
-              <TouchableHighlight
-                onPress={() => this.onOpenlink()}
-                style={styles.button}>
-                  <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Open Link</Text>
-              </TouchableHighlight>
-              : null
-            }
+            <Text style={styles.simpleText}>{this.state.OTP ? 'Your Password: '+this.state.OTP : ''}</Text>
+            <TextInput style={styles.textInput} autoCapitalize='none' onChangeText={this.handleChangeOTP}/>
             <TouchableHighlight
               onPress={() => this.onOpneScanner()}
               style={styles.button}>
                 <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Open QR Scanner</Text>
             </TouchableHighlight>
+            <ScrollView>
             <Text>Response: {this.state.apiResponse && JSON.stringify(this.state.apiResponse, undefined, 2)}</Text>
-            <TouchableHighlight onPress={this.saveTest.bind(this)} style={styles.button}>
-                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Save data</Text>
+            </ScrollView>
+            <TouchableHighlight onPress={this.generateOTP.bind(this)} style={styles.button}>
+                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Get One-Time Password</Text>
             </TouchableHighlight>
-            <TouchableHighlight onPress={this.getTest.bind(this)} style={styles.button}>
-                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Get data</Text>
+            <TouchableHighlight onPress={this.lockBike.bind(this)} style={styles.button}>
+                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Lock Bike</Text>
             </TouchableHighlight>
-            <TouchableHighlight onPress={this.deleteTest.bind(this)} style={styles.button}>
-                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Delete data</Text>
+            <TouchableHighlight onPress={this.unlockBike.bind(this)} style={styles.button}>
+                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Unlock Bike</Text>
             </TouchableHighlight>
         </View>
       );
@@ -188,7 +190,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
       margin: 15,
-      height: 30,
+      height: 50,
       width: 200,
       borderWidth: 1,
       color: 'green',

@@ -56,10 +56,10 @@ function generateOTP() {
           
     // Declare a digits variable  
     // which stores all digits 
-    var digits = '0123456789'; 
+    var digits = 'abcdefghijklmnopqrstuvwxyz0123456789'; 
     let OTP = ''; 
-    for (let i = 0; i < 4; i++ ) { 
-        OTP += digits[Math.floor(Math.random() * 10)]; 
+    for (let i = 0; i < 6; i++ ) { 
+        OTP += digits[Math.floor(Math.random() * 36)]; 
     } 
     return OTP; 
 }
@@ -137,6 +137,7 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
       if (data.Item) {
+        if(!data.Item.rackPass){ data.Item['Pass'] = generateOTP();}
         res.json(data.Item);
       } else {
         res.json(data) ;
@@ -150,17 +151,27 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 * HTTP put method for insert object *
 *************************************/
 
-app.put(path, function(req, res) {
-  
+app.put(path + '/object' + hashKeyPath, function(req, res) {
+  var params = {};
+  var time = new Date().getTime();
   if (userIdPresent && req.apiGateway) {
-    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
   }
 
   let putItemParams = {
     TableName: tableName,
-    Item: req.body
+    Key: params,
+    UpdateExpression: 'remove devPass, rackPass, devId',
+    ConditionExpression: '#a = :b',
+    ExpressionAttributeNames: {'#a' : 'devPass'},
+    ExpressionAttributeValues: {
+      ':a' : req.body.devPass,
+    }
   }
-  dynamodb.put(putItemParams, (err, data) => {
+
+  dynamodb.update(putItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
@@ -180,13 +191,13 @@ app.post(path, function(req, res) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
-  req.body['devPass'] = generateOTP();
-  req.body['rackPass'] = generateOTP();
+  if (req.body.devPass) req.body['rackPass'] = generateOTP();
 
-  let putItemParams = {
+  let putItemParams = {u
     TableName: tableName,
     Item: req.body
   }
+
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;

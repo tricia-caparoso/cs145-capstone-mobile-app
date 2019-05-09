@@ -68,7 +68,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "smartrack-prod-20190508122025-deployment",
-					"S3Key": "amplify-builds/RFunc-1557289646-latest-build.zip"
+					"S3Key": "amplify-builds/RFunc-1557334770-latest-build.zip"
 				}
 			}
 		},
