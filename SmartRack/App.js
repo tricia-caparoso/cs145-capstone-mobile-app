@@ -1,70 +1,69 @@
 import Amplify, { API } from 'aws-amplify';
 import awsmobile from './src/aws-exports';
-//This is an example code to Scan QR code//
 import React, { Component } from 'react';
-//import react in our code.
-import { Text, TextInput, View, ScrollView, Linking, TouchableHighlight, PermissionsAndroid, Button, Platform, StyleSheet} from 'react-native';
-// import all basic components
+import { Text, TextInput, View, Image, Linking, TouchableHighlight, PermissionsAndroid, Button, Platform, StyleSheet} from 'react-native';
 import { CameraKitCameraScreen, } from 'react-native-camera-kit';
-//import CameraKitCameraScreen we are going to use.
+import DeviceInfo from 'react-native-device-info';
+
 Amplify.configure(awsmobile);
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      //variable to hold the qr value
       qrvalue: '',
       opneScanner: false,
       apiResponse: '',
       OTP:'',
-      temp: ''
+      status: '',
+      deviceId: ''
     };
   }
   handleChangeOTP = (event) => {this.setState({OTP: event});}
   async lockBike() {
     let newNote = {
       body: {
-        "devId": 4,
+        "devId": DeviceInfo.getUniqueID(),
         "devPass": this.state.OTP,
         "status": true,
         "rackId": Number(this.state.qrvalue)
       }
     }
     const path = "/BikeRacks/";
-    // Use the API module to save the note to the database
-    this.setState({apiResponse: "hi"});
     try {
-      const Response = await API.put("RFunc", path, newNote)
-      this.setState({apiResponse: Response});
+      const apiResponse = await API.post("RFunc", path, newNote)
+      this.setState({apiResponse});
+      if (apiResponse) this.setState({status: "Your Bike is locked now!"});
+      else this.setState({status: "This rack is already locked!"});
     } catch (e) {
-      this.setState({apiResponse: e.response});
+      this.setState({status: "This rack is already locked and occupied!"});
     }
   } 
   async unlockBike() {
     let newNote = {
       body: {
+        "devId": DeviceInfo.getUniqueID(),
         "status": false,
         "rackId": Number(this.state.qrvalue)
       }
     }
     const path = "/BikeRacks/";
     try {
-      const Response = await API.put("RFunc", path, newNote)
-      this.setState({apiResponse: Response});
+      const apiResponse = await API.put("RFunc", path, newNote)
+      this.setState({apiResponse});
+      this.setState({status: "Your Bike is unlocked now!"});
     } catch (e) {
-      this.setState({apiResponse: e});
-      console.log(e);
+      this.setState({status: "You are not authorized to unlock this bike!"});
     }
   }
   async generateOTP() {
     const path = "/BikeRacks/object/" + this.state.qrvalue;
-    this.setState({apiResponse: "Check"});
     try {
       const apiResponse = await API.get("RFunc", path);
       this.setState({apiResponse});
       this.setState({OTP: apiResponse.Pass});
+      if (apiResponse.Pass) this.setState({status: "Password received!\nClick the lock button to secure your Bike now!"});
+      else this.setState({status: "Cannot bind you to this rack!\nIt is already occupied!"});
     } catch (e) {
-      console.log(e);
       this.setState({apiResponse: e});
     }
   }
@@ -115,17 +114,14 @@ class App extends Component {
     if (!this.state.opneScanner) {
       return (
         <View style={styles.container}>
-            <Text style={styles.heading}>Welcome to SmartRack!</Text>
-            <Text style={styles.simpleText}>{this.state.OTP ? 'Your Password: '+this.state.OTP : ''}</Text>
-            <TextInput style={styles.textInput} autoCapitalize='none' onChangeText={this.handleChangeOTP}/>
+            <Image style={{width: 150, height:150}} source={require('./logo.png')}/>
+            <Text style={styles.simpleText}>Rack #: {this.state.qrvalue}</Text>
+            <Text style={styles.simpleText}>{this.state.status}</Text>
             <TouchableHighlight
               onPress={() => this.onOpneScanner()}
               style={styles.button}>
                 <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Open QR Scanner</Text>
             </TouchableHighlight>
-            <ScrollView>
-            <Text>Response: {this.state.apiResponse && JSON.stringify(this.state.apiResponse, undefined, 2)}</Text>
-            </ScrollView>
             <TouchableHighlight onPress={this.generateOTP.bind(this)} style={styles.button}>
                 <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Get One-Time Password</Text>
             </TouchableHighlight>
@@ -172,21 +168,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#2c3539',
     padding: 10,
     width:300,
-    marginTop:16
+    marginTop:10
   },
   heading: { 
     color: 'black', 
     fontSize: 24, 
     alignSelf: 'center', 
-    padding: 10, 
-    marginTop: 30 
+    padding: 5,
   },
   simpleText: { 
     color: 'black', 
-    fontSize: 20, 
+    fontSize: 20,
+    textAlign: 'center',
     alignSelf: 'center', 
-    padding: 10, 
-    marginTop: 16
+    padding: 5, 
+    marginTop: 10
   },
   textInput: {
       margin: 15,

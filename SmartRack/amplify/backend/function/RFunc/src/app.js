@@ -139,8 +139,6 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
       if (data.Item) {
         if(!data.Item.rackPass){ data.Item['Pass'] = generateOTP();}
         res.json(data.Item);
-      } else {
-        res.json(data) ;
       }
     }
   });
@@ -151,34 +149,34 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 * HTTP put method for insert object *
 *************************************/
 
-app.put(path + '/object' + hashKeyPath, function(req, res) {
-  var params = {};
-  var time = new Date().getTime();
-  if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  } else {
-    params[partitionKeyName] = req.params[partitionKeyName];
-  }
+app.put(path, function(req, res) {
 
+  if (userIdPresent && req.apiGateway) {
+    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  }
+  
+  var devId = req.body.devId;
+  delete req.body.devId;
+  
   let putItemParams = {
     TableName: tableName,
-    Key: params,
-    UpdateExpression: 'remove devPass, rackPass, devId',
+    Item: req.body,
+    ReturnValues: "ALL_OLD",
     ConditionExpression: '#a = :b',
-    ExpressionAttributeNames: {'#a' : 'devPass'},
+    ExpressionAttributeNames: {'#a' : 'devId'},
     ExpressionAttributeValues: {
-      ':a' : req.body.devPass,
+      ':b' : devId,
     }
   }
 
-  dynamodb.update(putItemParams, (err, data) => {
+  dynamodb.put(putItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;
-      res.json({error: err, url: req.url, body: req.body});
+      res.json({error: "Invalid user!", url: req.url, body: req.body});
     } else{
-      res.json({success: 'put call succeed!', url: req.url, data: data})
+      res.json({success: 'post call succeed!', url: req.url, old_data: data})
     }
-  });
+  });        
 });
 
 /************************************
@@ -191,19 +189,22 @@ app.post(path, function(req, res) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
-  if (req.body.devPass) req.body['rackPass'] = generateOTP();
+  req.body['rackPass'] = generateOTP();
 
-  let putItemParams = {u
+  let putItemParams = {
     TableName: tableName,
-    Item: req.body
+    Item: req.body,
+    ReturnValues: "ALL_OLD",
+    ConditionExpression: 'attribute_not_exists(#a)',
+    ExpressionAttributeNames: {'#a' : 'devPass'},
   }
 
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;
-      res.json({error: err, url: req.url, body: req.body});
+      res.json({error: "Invalid user!", url: req.url, body: req.body});
     } else{
-      res.json({success: 'post call succeed!', url: req.url, data: data})
+      res.json({success: 'post call succeed!', url: req.url, old_data: data})
     }
   });
 });
