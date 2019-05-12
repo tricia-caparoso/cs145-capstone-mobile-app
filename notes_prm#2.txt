@@ -1,0 +1,22 @@
+webserver sends a one-time key to rack and users phone
+	-> make sure the assignement of keys/passcode is one-time and one-to-one (rack-user)
+	-> no need ofr 2FA
+use mobile QR code scanner
+
+	
+	park bike to rack
+	mobile app send command to webserver (register)
+	For everytime user registers, a new passcode is generated
+	webserver sends unique passcode to phone and bike (same code to bind them)
+	user scans QR code on bike rack using mobile
+	mobile sends passcode and number of bike rack
+	when rack receives proper key, it will unlock
+
+API Gateway/EC2 Lambda/Dynamo DB
+
+AI (use dummy data for now):
++ add a recommender (based on statistics)
+	+ for where to put your bike (based on safety)
+	+ when to park
++ A*/Dijkstra for nearest bike to get (based on location of user)
+
