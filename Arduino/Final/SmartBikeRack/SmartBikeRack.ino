@@ -9,8 +9,8 @@ Servo servo1;
 
 AWS_IOT hornbill;
 
-char WIFI_SSID[] = "Redmi";
-char WIFI_PASSWORD[] = "pater2215";
+char WIFI_SSID[] = "Lenovo K5";
+char WIFI_PASSWORD[] = "ayokonga";
 char HOST_ADDRESS[] = "a1i9pgad4051ff-ats.iot.us-east-1.amazonaws.com";
 char CLIENT_ID[] = "arn:aws:iot:us-east-1:693535435238:policy/myTestThing";
 char TOPIC_NAME[] = "arn:aws:iot:us-east-1:693535435238:thing/myTestThing";
@@ -20,7 +20,7 @@ int status = WL_IDLE_STATUS;
 int tick = 0, msgCount = 0, msgReceived = 0;
 char payload[512];
 char rcvdPayload[512];
-int bike_curr_state = 1;
+int bike_curr_state = 0;
 
 
 void mySubCallBackHandler (char *topicName, int payloadLen, char *payLoad)
@@ -149,8 +149,8 @@ void loop() {
 void lock_state() {
   Serial.println("Lock");
   for (int posDegrees = 0; posDegrees <= 90; posDegrees++) {
-    servo1.writeMicroseconds(posDegrees);
-    delay(10);
+    servo1.write(posDegrees);
+    delay(12);
     if (posDegrees == 90) {
       servo1.detach();
       Serial.print(posDegrees);
@@ -162,7 +162,7 @@ void unlock_state() {
   Serial.println("Unlock");
   for (int posDegrees = 180; posDegrees >= 90; posDegrees--) {
     servo1.write(posDegrees);
-    delay(10);
+    delay(8);
     if (posDegrees == 90) {
       servo1.detach();
       Serial.print(posDegrees);
